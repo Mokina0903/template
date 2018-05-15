@@ -1,4 +1,4 @@
-namespace __PROJECT_NAME__
+namespace histogram
 
 open System
 open Aardvark.Base
@@ -6,7 +6,7 @@ open Aardvark.Base.Incremental
 open Aardvark.UI
 open Aardvark.UI.Primitives
 open Aardvark.Base.Rendering
-open __PROJECT_NAME__.Model
+open histogram.Model
 
 type Message =
     | ToggleModel
@@ -50,12 +50,13 @@ module App =
             ]
 
         body [] [
-            CameraController.controlledControl m.cameraState CameraMessage frustum (AttributeMap.ofList att) sg
-
-            div [style "position: fixed; left: 20px; top: 20px"] [
-                button [onClick (fun _ -> ToggleModel)] [text "Toggle Model"]
-            ]
-
+            text "ADF"
+            //CameraController.controlledControl m.cameraState CameraMessage frustum (AttributeMap.ofList att) sg
+            //
+            //div [style "position: fixed; left: 20px; top: 20px"] [
+            //    button [onClick (fun _ -> ToggleModel)] [text "Toggle Model"]
+            //]
+            //
         ]
 
     let app =

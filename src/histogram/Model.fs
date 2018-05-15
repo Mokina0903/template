@@ -1,4 +1,4 @@
-namespace __PROJECT_NAME__.Model
+namespace histogram.Model
 
 open System
 open Aardvark.Base

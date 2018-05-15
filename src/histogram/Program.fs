@@ -1,4 +1,4 @@
-open __PROJECT_NAME__
+open histogram
 
 open Aardium
 open Aardvark.Service
@@ -8,6 +8,7 @@ open Suave.WebPart
 open Aardvark.Rendering.Vulkan
 open Aardvark.Base
 open System
+open Aardvark.Application.Slim
 
 
 
@@ -18,7 +19,7 @@ let main args =
     Aardvark.Init()
     Aardium.init()
 
-    let app = new HeadlessVulkanApplication(true)
+    let app = new OpenGlApplication(true)
 
     WebPart.startServer 4321 [
         MutableApp.toWebPart' app.Runtime false (App.start App.app)
