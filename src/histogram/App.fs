@@ -13,8 +13,7 @@ type Message =
     | CameraMessage of CameraControllerMessage
 
 module App =
-    
-    let initial = { currentModel = Box; cameraState = CameraController.initial }
+   
 
     let update (m : Model) (msg : Message) =
         match msg with
@@ -26,7 +25,24 @@ module App =
             | CameraMessage msg ->
                 { m with cameraState = CameraController.update m.cameraState msg }
 
+    
+
     let view (m : MModel) =
+
+        let helper (data : Map<string, float>) : DomNode<'a> = 
+            let newStuff = 
+                    data |> Map.toList |> List.map (fun x -> 
+                        let (name, value) = x
+                        value
+                        )
+            Svg.rect [attribute "width" "50px"; attribute "height" "50px"]
+
+        let dynamicGui =
+            alist {
+                let! data = m.data
+                let content = helper data
+                yield Svg.svg [attribute "width" "600px"; attribute "height" "400px"] [content]
+           }
 
         let frustum = 
             Frustum.perspective 60.0 0.1 100.0 1.0 
@@ -50,7 +66,7 @@ module App =
             ]
 
         body [] [
-            text "ADF"
+            Incremental.div AttributeMap.empty dynamicGui
             //CameraController.controlledControl m.cameraState CameraMessage frustum (AttributeMap.ofList att) sg
             //
             //div [style "position: fixed; left: 20px; top: 20px"] [
@@ -60,10 +76,11 @@ module App =
         ]
 
     let app =
+        let data = Map.empty
         {
-            initial = initial
+            initial =  { data = data; currentModel = Box; cameraState = CameraController.initial }
             update = update
             view = view
-            threads = Model.Lens.cameraState.Get >> CameraController.threads >> ThreadPool.map CameraMessage
+            threads = fun _ -> ThreadPool.empty
             unpersist = Unpersist.instance
         }

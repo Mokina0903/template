@@ -13,6 +13,7 @@ type Primitive =
 [<DomainType>]
 type Model =
     {
+        data : Map<string,float>
         currentModel    : Primitive
         cameraState     : CameraControllerState
     }

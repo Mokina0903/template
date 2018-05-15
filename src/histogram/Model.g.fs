@@ -13,9 +13,11 @@ module Mutable =
     type MModel(__initial : histogram.Model.Model) =
         inherit obj()
         let mutable __current : Aardvark.Base.Incremental.IModRef<histogram.Model.Model> = Aardvark.Base.Incremental.EqModRef<histogram.Model.Model>(__initial) :> Aardvark.Base.Incremental.IModRef<histogram.Model.Model>
+        let _data = ResetMod.Create(__initial.data)
         let _currentModel = ResetMod.Create(__initial.currentModel)
         let _cameraState = Aardvark.UI.Primitives.Mutable.MCameraControllerState.Create(__initial.cameraState)
         
+        member x.data = _data :> IMod<_>
         member x.currentModel = _currentModel :> IMod<_>
         member x.cameraState = _cameraState
         
@@ -24,6 +26,7 @@ module Mutable =
             if not (System.Object.ReferenceEquals(__current.Value, v)) then
                 __current.Value <- v
                 
+                ResetMod.Update(_data,v.data)
                 ResetMod.Update(_currentModel,v.currentModel)
                 Aardvark.UI.Primitives.Mutable.MCameraControllerState.Update(_cameraState, v.cameraState)
                 
@@ -42,6 +45,12 @@ module Mutable =
     module Model =
         [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
         module Lens =
+            let data =
+                { new Lens<histogram.Model.Model, Microsoft.FSharp.Collections.Map<System.String,System.Double>>() with
+                    override x.Get(r) = r.data
+                    override x.Set(r,v) = { r with data = v }
+                    override x.Update(r,f) = { r with data = f r.data }
+                }
             let currentModel =
                 { new Lens<histogram.Model.Model, histogram.Model.Primitive>() with
                     override x.Get(r) = r.currentModel
